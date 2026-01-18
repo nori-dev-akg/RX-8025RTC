@@ -27,12 +27,6 @@ enum RX8025_Reg {
     REG_EXT_ADJ     = 0x10, REG_EXT_CTRL1    = 0x1E, REG_EXT_CTRL2    = 0x1F
 };
 
-enum Weekday {
-    W_SUN = 0, W_MON = 1, W_TUE = 2, W_WED = 3,
-    W_THU = 4, W_FRI = 5, W_SAT = 6
-};
-
-
 /**
  * @brief Bitmask for Alarm W (Weekly Alarm).
  */
@@ -65,8 +59,8 @@ public:
     // Time & Date
     bool setTime(uint8_t hour, uint8_t min, uint8_t sec);
     bool getTime(uint8_t &hour, uint8_t &min, uint8_t &sec);
-    bool setDate(uint8_t year, uint8_t month, uint8_t day, Weekday wday);
-    bool getDate(uint8_t &year, uint8_t &month, uint8_t &day, Weekday &wday);
+    bool setDate(uint8_t year, uint8_t month, uint8_t day);
+    bool getDate(uint8_t &year, uint8_t &month, uint8_t &day, uint8_t &wday);
 
     // Alarm D (/INTA)
     bool setAlarmD(uint8_t hour, uint8_t min);
@@ -90,6 +84,9 @@ public:
     bool voltageLow();
     uint8_t readStatus1();
     uint8_t readStatus2();
+
+    // Utility
+    int getWeekday(int y, int m, int d);
 
 private:
     TwoWire *_wire;

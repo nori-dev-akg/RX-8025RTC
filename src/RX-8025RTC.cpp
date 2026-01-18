@@ -52,9 +52,9 @@ bool RX8025RTC::getTime(uint8_t &hour, uint8_t &min, uint8_t &sec) {
 
 /**
  * @brief Sets calendar date.
- * @param wday 0(Sun) to 6(Sat).
  */
-bool RX8025RTC::setDate(uint8_t year, uint8_t month, uint8_t day, Weekday wday) {
+bool RX8025RTC::setDate(uint8_t year, uint8_t month, uint8_t day) {
+    uint8_t wday = getWeekday(year, month, day);
     uint8_t buf[4] = { (uint8_t)(wday & 0x07), dec2bcd(day), dec2bcd(month), dec2bcd(year) };
     return writeRegs(REG_WEEK, buf, 4);
 }
@@ -62,10 +62,10 @@ bool RX8025RTC::setDate(uint8_t year, uint8_t month, uint8_t day, Weekday wday) 
 /**
  * @brief Reads calendar date.
  */
-bool RX8025RTC::getDate(uint8_t &year, uint8_t &month, uint8_t &day, Weekday &wday) {
+bool RX8025RTC::getDate(uint8_t &year, uint8_t &month, uint8_t &day, uint8_t &wday) {
     uint8_t buf[4];
     if (!readRegs(REG_WEEK, buf, 4)) return false;
-    wday  = (Weekday)(buf[0] & 0x07);
+    wday  = buf[0] & 0x07;
     day   = bcd2dec(buf[1] & 0x3F);
     month = bcd2dec(buf[2] & 0x1F);
     year  = bcd2dec(buf[3]);
@@ -236,4 +236,23 @@ bool RX8025RTC::readRegs(uint8_t reg, uint8_t *buf, uint8_t len) {
         if (_wire->available()) buf[i] = _wire->read();
     }
     return true;
+}
+
+/**
+ * @brief Calculates the day of the week for a given date.
+ * 
+ * @param y year (0-99)
+ * @param m month (1-12)
+ * @param d day (1-31)
+ * @return int 
+ */
+int RX8025RTC::getWeekday(int y, int m, int d)
+{
+    y += 2000;
+    if (m < 3)
+    {
+        y--;
+        m += 12;
+    }
+    return (y + y / 4 - y / 100 + y / 400 + (13 * m + 8) / 5 + d) % 7;
 }

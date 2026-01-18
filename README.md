@@ -44,7 +44,7 @@ RX8025RTC rtc(Wire);
 void setup() {
     rtc.begin();
     rtc.setTime(14, 30, 0); // 14:30:00
-    rtc.setDate(25, 12, 19, W_FRI); // Dec 19th, 2025 (Friday)
+    rtc.setDate(25, 12, 19); // Dec 19th, 2025
 }
 
 ```
@@ -56,7 +56,7 @@ Check the `examples/SleepAlarm/SleepAlarm.ino` for a complete guide on how to wa
 ## Library API
 
 * `setTime(h, m, s)` / `getTime(h, m, s)`
-* `setDate(y, m, d, wday)` / `getDate(y, m, d, wday)`
+* `setDate(y, m, d)` / `getDate(y, m, d, wday)`
 * `setAlarmD(h, m)` / `enableAlarmD(true)`
 * `setAlarmW(h, m, weekMask)` / `enableAlarmW(true)`
 * `setCycleTimer(period)` / `enableCycleTimer(true)`
