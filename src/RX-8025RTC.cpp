@@ -21,7 +21,7 @@ bool RX8025RTC::begin() {
     
     uint8_t ctrl1;
     if (readRegs(REG_CTRL1, &ctrl1, 1)) {
-        ctrl1 &= ~0x20; // 12/24H bit = 0 (24H)
+        ctrl1 |= 0x20; // 12/24H bit = 1 (24H)
         writeRegs(REG_CTRL1, &ctrl1, 1);
     }
 
@@ -78,6 +78,7 @@ bool RX8025RTC::getDate(uint8_t &year, uint8_t &month, uint8_t &day, uint8_t &wd
  * @brief Configures Alarm D (Daily Alarm).
  */
 bool RX8025RTC::setAlarmD(uint8_t hour, uint8_t min) {
+    enableAlarmD(false); // Disable before setting
     uint8_t buf[2] = { dec2bcd(min), dec2bcd(hour) }; // AE(bit7)=0 ensures alarm is active
     return writeRegs(REG_ALM_D_MIN, buf, 2);
 }
@@ -115,6 +116,7 @@ bool RX8025RTC::clearAlarmDFlag() {
  * @param weekMask Bitmask from WeekdayMask (Default: ALL).
  */
 bool RX8025RTC::setAlarmW(uint8_t hour, uint8_t min, WeekdayMask weekMask) {
+    enableAlarmW(false); // Disable before setting
     uint8_t buf[3] = { dec2bcd(min), dec2bcd(hour), (uint8_t)weekMask };
     return writeRegs(REG_ALM_W_MIN, buf, 3);
 }
